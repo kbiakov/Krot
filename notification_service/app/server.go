@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/bitly/go-nsq"
 	"encoding/json"
-	"sync"
 	"fmt"
 
 	service "../lib"
@@ -18,27 +17,24 @@ type Notification struct {
 }
 
 func main() {
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-
 	config := nsq.NewConfig()
 
-	bindHandler("email", &config, &wg, func(n *Notification) {
-		service.SendEmail(n.SubscriptionID, n.Endpoints[0], n.Text)
+	bindHandler("email", &config, func(n *Notification) error {
+		return service.SendEmail(n.SubscriptionID, n.Endpoints[0], n.Text)
 	})
 
-	bindHandler("apns", &config, &wg, func(n *Notification) {
-		service.SendApnsMessage(n.SubscriptionID, n.Endpoints[0], n.Text)
+	bindHandler("apns", &config, func(n *Notification) error {
+		return service.SendApnsMessage(n.SubscriptionID, n.Endpoints[0], n.Text)
 	})
 
-	bindHandler("gcm", &config, &wg, func(n *Notification) {
-		service.SendGcmMessage(n.SubscriptionID, n.Endpoints, n.Text)
+	bindHandler("gcm", &config, func(n *Notification) error {
+		return service.SendGcmMessage(n.SubscriptionID, n.Endpoints, n.Text)
 	})
 
-	wg.Wait()
+	fmt.Scanln()
 }
 
-func bindHandler(topic string, config *nsq.Config, wg *sync.WaitGroup, handler func(*Notification))  {
+func bindHandler(topic string, config *nsq.Config, handler func(*Notification) error)  {
 	q, _ := nsq.NewConsumer(topic, DefaultChannel, &config)
 
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
@@ -46,11 +42,9 @@ func bindHandler(topic string, config *nsq.Config, wg *sync.WaitGroup, handler f
 		if err := json.Unmarshal(message.Body, &notification); err != nil {
 			return err
 		}
-
-		handler(&notification)
-
-		wg.Done()
-
+		if err := handler(&notification); err != nil {
+			return err
+		}
 		return nil
 	}))
 
