@@ -6,7 +6,8 @@ RUN groupadd -r krot && useradd -r -g krot krot
 
 WORKDIR /app
 COPY app /app
-COPY lib /lib
+COPY data /data
+COPY rpc /rpc
 COPY cmd.sh /
 
 EXPOSE 9020

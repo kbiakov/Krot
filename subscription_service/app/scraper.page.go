@@ -1,10 +1,10 @@
-package krot
+package main
 
 import (
 	"net/http"
+	"strings"
 	"github.com/djimenez/iconv-go"
 	"github.com/PuerkitoBio/goquery"
-	"strings"
 )
 
 type PageScraper struct {
@@ -16,7 +16,7 @@ type PageScraper struct {
 
 func (s *PageScraper) scrap() (string, error) {
 	// Get content by url
-	// TODO: add proxy
+	// TODO: proxy request?
 	res, err := http.Get(s.Url)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func (s *PageScraper) scrap() (string, error) {
 		return nil, err
 	}
 
-	content := extractContents(doc, s.ClassName)
+	content := extractContents(&doc, s.ClassName)
 
 	return content, nil
 }

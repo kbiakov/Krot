@@ -57,6 +57,7 @@ services:
       - ./app:/app
     depends_on:
       - mongo
+      - notification_service
 
   api_service:
     image: kbiakov/krot-api

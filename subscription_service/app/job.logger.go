@@ -1,8 +1,6 @@
-package krot
+package main
 
 import "time"
-
-var mongoLogs = mongo.C("logs")
 
 const (
 	LogLevel_Info = iota
@@ -17,11 +15,13 @@ type Log struct {
 	Message		string	`json:"message" bson:"message"`
 }
 
+const logs = mongo.C("logs")
+
 func Log(id string, level int, message string) {
 	timeNow := time.Now().Format(time.RFC3339)
 	logLevel := logLevelAsRune(level)
 
-	mongoLogs.Insert(&Log{
+	logs.Insert(&Log{
 		SubscriptionID: id,
 		Level: logLevel,
 		Time: timeNow,

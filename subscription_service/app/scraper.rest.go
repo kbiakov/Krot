@@ -1,4 +1,4 @@
-package krot
+package main
 
 import (
 	"github.com/djimenez/iconv-go"

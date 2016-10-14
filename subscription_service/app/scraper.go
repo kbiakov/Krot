@@ -1,4 +1,4 @@
-package krot
+package main
 
 const ErrInvalidScraperType = error("Invalid scraper type")
 

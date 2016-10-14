@@ -2,24 +2,22 @@ syntax = "proto3";
 
 service SubscriptionService {
     rpc Subscribe(Subscription) returns (Response) {}
-    rpc ResumeSubscription(Id) returns (Response) {}
-    rpc StopSubscription(Id) returns (Response) {}
-    rpc UpdateSubscription(Id) returns (Response) {}
-    rpc Unsubscribe(Id) returns (Response) {}
+    rpc ResumeSubscription(SubscriptionId) returns (Response) {}
+    rpc StopSubscription(SubscriptionId) returns (Response) {}
+    rpc Unsubscribe(SubscriptionId) returns (Response) {}
 }
 
 message Subscription {
-    string id = 1;
-    string user_id = 2;
-    uint32 type = 3;
-    string url	= 4;
-    string tag = 5;
-    uint32 poll_ms = 6;
-    uint32 status = 7;
+    string user_id = 1;
+    uint32 type = 2;
+    string url = 3;
+    string tag = 4;
+    uint32 poll_ms = 5;
+    uint32 status = 6;
 }
 
-message Id {
-    uint64 subscription_id = 1;
+message SubscriptionId {
+    string id = 1;
 }
 
 message Response {

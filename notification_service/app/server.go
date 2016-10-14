@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/bitly/go-nsq"
+	"github.com/nsqio/go-nsq"
 	"encoding/json"
 	"fmt"
 

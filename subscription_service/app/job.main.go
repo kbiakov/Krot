@@ -1,9 +1,9 @@
-package krot
+package main
 
 import "time"
 
 const (
-	ErrInvalidEmitterConversion = error("Invalid emitter convrsion")
+	ErrInvalidEmitterConversion = error("Invalid emitter conversion")
 	ErrObserverTimeout = error("Observer exited by timeout")
 )
 

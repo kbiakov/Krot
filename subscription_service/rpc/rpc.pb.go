@@ -10,7 +10,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	Subscription
-	Id
+	SubscriptionId
 	Response
 */
 package rpc
@@ -36,13 +36,12 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type Subscription struct {
-	Id     string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
-	UserId string `protobuf:"bytes,2,opt,name=user_id,json=userId" json:"user_id,omitempty"`
-	Type   uint32 `protobuf:"varint,3,opt,name=type" json:"type,omitempty"`
-	Url    string `protobuf:"bytes,4,opt,name=url" json:"url,omitempty"`
-	Tag    string `protobuf:"bytes,5,opt,name=tag" json:"tag,omitempty"`
-	PollMs uint32 `protobuf:"varint,6,opt,name=poll_ms,json=pollMs" json:"poll_ms,omitempty"`
-	Status uint32 `protobuf:"varint,7,opt,name=status" json:"status,omitempty"`
+	UserId string `protobuf:"bytes,1,opt,name=user_id,json=userId" json:"user_id,omitempty"`
+	Type   uint32 `protobuf:"varint,2,opt,name=type" json:"type,omitempty"`
+	Url    string `protobuf:"bytes,3,opt,name=url" json:"url,omitempty"`
+	Tag    string `protobuf:"bytes,4,opt,name=tag" json:"tag,omitempty"`
+	PollMs uint32 `protobuf:"varint,5,opt,name=poll_ms,json=pollMs" json:"poll_ms,omitempty"`
+	Status uint32 `protobuf:"varint,6,opt,name=status" json:"status,omitempty"`
 }
 
 func (m *Subscription) Reset()                    { *m = Subscription{} }
@@ -50,14 +49,14 @@ func (m *Subscription) String() string            { return proto.CompactTextStri
 func (*Subscription) ProtoMessage()               {}
 func (*Subscription) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
-type Id struct {
-	SubscriptionId uint64 `protobuf:"varint,1,opt,name=subscription_id,json=subscriptionId" json:"subscription_id,omitempty"`
+type SubscriptionId struct {
+	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
 }
 
-func (m *Id) Reset()                    { *m = Id{} }
-func (m *Id) String() string            { return proto.CompactTextString(m) }
-func (*Id) ProtoMessage()               {}
-func (*Id) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (m *SubscriptionId) Reset()                    { *m = SubscriptionId{} }
+func (m *SubscriptionId) String() string            { return proto.CompactTextString(m) }
+func (*SubscriptionId) ProtoMessage()               {}
+func (*SubscriptionId) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
 type Response struct {
 	Success bool   `protobuf:"varint,1,opt,name=success" json:"success,omitempty"`
@@ -71,7 +70,7 @@ func (*Response) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2}
 
 func init() {
 	proto.RegisterType((*Subscription)(nil), "Subscription")
-	proto.RegisterType((*Id)(nil), "Id")
+	proto.RegisterType((*SubscriptionId)(nil), "SubscriptionId")
 	proto.RegisterType((*Response)(nil), "Response")
 }
 
@@ -87,10 +86,9 @@ const _ = grpc.SupportPackageIsVersion3
 
 type SubscriptionServiceClient interface {
 	Subscribe(ctx context.Context, in *Subscription, opts ...grpc.CallOption) (*Response, error)
-	ResumeSubscription(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error)
-	StopSubscription(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error)
-	UpdateSubscription(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error)
-	Unsubscribe(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error)
+	ResumeSubscription(ctx context.Context, in *SubscriptionId, opts ...grpc.CallOption) (*Response, error)
+	StopSubscription(ctx context.Context, in *SubscriptionId, opts ...grpc.CallOption) (*Response, error)
+	Unsubscribe(ctx context.Context, in *SubscriptionId, opts ...grpc.CallOption) (*Response, error)
 }
 
 type subscriptionServiceClient struct {
@@ -110,7 +108,7 @@ func (c *subscriptionServiceClient) Subscribe(ctx context.Context, in *Subscript
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) ResumeSubscription(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error) {
+func (c *subscriptionServiceClient) ResumeSubscription(ctx context.Context, in *SubscriptionId, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := grpc.Invoke(ctx, "/SubscriptionService/ResumeSubscription", in, out, c.cc, opts...)
 	if err != nil {
@@ -119,7 +117,7 @@ func (c *subscriptionServiceClient) ResumeSubscription(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) StopSubscription(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error) {
+func (c *subscriptionServiceClient) StopSubscription(ctx context.Context, in *SubscriptionId, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := grpc.Invoke(ctx, "/SubscriptionService/StopSubscription", in, out, c.cc, opts...)
 	if err != nil {
@@ -128,16 +126,7 @@ func (c *subscriptionServiceClient) StopSubscription(ctx context.Context, in *Id
 	return out, nil
 }
 
-func (c *subscriptionServiceClient) UpdateSubscription(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := grpc.Invoke(ctx, "/SubscriptionService/UpdateSubscription", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *subscriptionServiceClient) Unsubscribe(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Response, error) {
+func (c *subscriptionServiceClient) Unsubscribe(ctx context.Context, in *SubscriptionId, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := grpc.Invoke(ctx, "/SubscriptionService/Unsubscribe", in, out, c.cc, opts...)
 	if err != nil {
@@ -150,10 +139,9 @@ func (c *subscriptionServiceClient) Unsubscribe(ctx context.Context, in *Id, opt
 
 type SubscriptionServiceServer interface {
 	Subscribe(context.Context, *Subscription) (*Response, error)
-	ResumeSubscription(context.Context, *Id) (*Response, error)
-	StopSubscription(context.Context, *Id) (*Response, error)
-	UpdateSubscription(context.Context, *Id) (*Response, error)
-	Unsubscribe(context.Context, *Id) (*Response, error)
+	ResumeSubscription(context.Context, *SubscriptionId) (*Response, error)
+	StopSubscription(context.Context, *SubscriptionId) (*Response, error)
+	Unsubscribe(context.Context, *SubscriptionId) (*Response, error)
 }
 
 func RegisterSubscriptionServiceServer(s *grpc.Server, srv SubscriptionServiceServer) {
@@ -179,7 +167,7 @@ func _SubscriptionService_Subscribe_Handler(srv interface{}, ctx context.Context
 }
 
 func _SubscriptionService_ResumeSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
+	in := new(SubscriptionId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -191,13 +179,13 @@ func _SubscriptionService_ResumeSubscription_Handler(srv interface{}, ctx contex
 		FullMethod: "/SubscriptionService/ResumeSubscription",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).ResumeSubscription(ctx, req.(*Id))
+		return srv.(SubscriptionServiceServer).ResumeSubscription(ctx, req.(*SubscriptionId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _SubscriptionService_StopSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
+	in := new(SubscriptionId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -209,31 +197,13 @@ func _SubscriptionService_StopSubscription_Handler(srv interface{}, ctx context.
 		FullMethod: "/SubscriptionService/StopSubscription",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).StopSubscription(ctx, req.(*Id))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _SubscriptionService_UpdateSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(SubscriptionServiceServer).UpdateSubscription(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/SubscriptionService/UpdateSubscription",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).UpdateSubscription(ctx, req.(*Id))
+		return srv.(SubscriptionServiceServer).StopSubscription(ctx, req.(*SubscriptionId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _SubscriptionService_Unsubscribe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
+	in := new(SubscriptionId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -245,7 +215,7 @@ func _SubscriptionService_Unsubscribe_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/SubscriptionService/Unsubscribe",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SubscriptionServiceServer).Unsubscribe(ctx, req.(*Id))
+		return srv.(SubscriptionServiceServer).Unsubscribe(ctx, req.(*SubscriptionId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -267,10 +237,6 @@ var _SubscriptionService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _SubscriptionService_StopSubscription_Handler,
 		},
 		{
-			MethodName: "UpdateSubscription",
-			Handler:    _SubscriptionService_UpdateSubscription_Handler,
-		},
-		{
 			MethodName: "Unsubscribe",
 			Handler:    _SubscriptionService_Unsubscribe_Handler,
 		},
@@ -282,24 +248,23 @@ var _SubscriptionService_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("rpc.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 298 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x84, 0x91, 0xb1, 0x6e, 0xf2, 0x30,
-	0x10, 0xc7, 0xbf, 0x04, 0x08, 0xe4, 0xbe, 0x42, 0xd1, 0xb5, 0x6a, 0xad, 0x2e, 0x45, 0x51, 0x05,
-	0x2c, 0xcd, 0xd0, 0x6e, 0x7d, 0x83, 0x0c, 0x5d, 0x8c, 0x98, 0x51, 0x88, 0x2d, 0x64, 0x09, 0xb0,
-	0xe5, 0xb3, 0x2b, 0xf5, 0x6d, 0xfa, 0x52, 0x7d, 0x9f, 0x2a, 0x4e, 0xa8, 0x82, 0x3a, 0xb0, 0xdd,
-	0xff, 0xa7, 0x9f, 0xcf, 0xe7, 0x33, 0xa4, 0xd6, 0x54, 0xb9, 0xb1, 0xda, 0xe9, 0xec, 0x2b, 0x82,
-	0xab, 0x95, 0xdf, 0x52, 0x65, 0x95, 0x71, 0x4a, 0x1f, 0x71, 0x02, 0xb1, 0x12, 0x2c, 0x9a, 0x45,
-	0xcb, 0x94, 0xc7, 0x4a, 0xe0, 0x3d, 0x0c, 0x3d, 0x49, 0xbb, 0x51, 0x82, 0xc5, 0x01, 0x26, 0x75,
-	0x2c, 0x04, 0x22, 0xf4, 0xdd, 0xa7, 0x91, 0xac, 0x37, 0x8b, 0x96, 0x63, 0x1e, 0x6a, 0x9c, 0x42,
-	0xcf, 0xdb, 0x3d, 0xeb, 0x07, 0xb1, 0x2e, 0x6b, 0xe2, 0xca, 0x1d, 0x1b, 0x34, 0xc4, 0x95, 0xbb,
-	0xba, 0xa1, 0xd1, 0xfb, 0xfd, 0xe6, 0x40, 0x2c, 0x09, 0x47, 0x93, 0x3a, 0xbe, 0x13, 0xde, 0x41,
-	0x42, 0xae, 0x74, 0x9e, 0xd8, 0xb0, 0xe1, 0x4d, 0xca, 0x9e, 0x21, 0x2e, 0x04, 0x2e, 0xe0, 0x9a,
-	0x3a, 0x73, 0x6e, 0xda, 0x21, 0xfb, 0x7c, 0xd2, 0xc5, 0x85, 0xc8, 0xde, 0x60, 0xc4, 0x25, 0x19,
-	0x7d, 0x24, 0x89, 0x0c, 0x86, 0xe4, 0xab, 0x4a, 0x12, 0x05, 0x79, 0xc4, 0x4f, 0x11, 0x6f, 0x61,
-	0x20, 0xad, 0xd5, 0xb6, 0x7d, 0x54, 0x13, 0x5e, 0xbe, 0x23, 0xb8, 0xe9, 0x6e, 0x63, 0x25, 0xed,
-	0x87, 0xaa, 0x24, 0x2e, 0x20, 0x6d, 0xf1, 0x56, 0xe2, 0x38, 0xef, 0x2a, 0x0f, 0x69, 0x7e, 0xba,
-	0x2e, 0xfb, 0x87, 0x73, 0x40, 0x2e, 0xc9, 0x1f, 0xe4, 0xd9, 0x4e, 0x7b, 0x79, 0x21, 0xce, 0xbd,
-	0x27, 0x98, 0xae, 0x9c, 0x36, 0x17, 0xac, 0x39, 0xe0, 0xda, 0x88, 0xd2, 0x5d, 0xea, 0xf6, 0x08,
-	0xff, 0xd7, 0x47, 0xfa, 0x1d, 0xf0, 0x8f, 0xb0, 0x4d, 0xc2, 0x67, 0xbf, 0xfe, 0x04, 0x00, 0x00,
-	0xff, 0xff, 0x2c, 0x3c, 0x8b, 0x39, 0xf9, 0x01, 0x00, 0x00,
+	// 277 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x94, 0x91, 0xcf, 0x4a, 0xc3, 0x40,
+	0x10, 0xc6, 0x4d, 0xff, 0xa4, 0xcd, 0x68, 0x6b, 0x19, 0x45, 0x17, 0x4f, 0x25, 0x17, 0x0b, 0x42,
+	0x90, 0x7a, 0xf3, 0x0d, 0x7a, 0xf0, 0xb2, 0xc1, 0x73, 0xc9, 0x9f, 0xa1, 0x04, 0xd2, 0xec, 0xb2,
+	0xb3, 0x2b, 0xf8, 0x16, 0xbe, 0x9a, 0x6f, 0x24, 0xd9, 0xd8, 0x92, 0x5c, 0x04, 0x6f, 0xf3, 0x7d,
+	0x7c, 0xdf, 0xec, 0x8f, 0x1d, 0x88, 0x8c, 0x2e, 0x12, 0x6d, 0x94, 0x55, 0xf1, 0x57, 0x00, 0x57,
+	0xa9, 0xcb, 0xb9, 0x30, 0x95, 0xb6, 0x95, 0x6a, 0xf0, 0x1e, 0x66, 0x8e, 0xc9, 0xec, 0xab, 0x52,
+	0x04, 0xeb, 0x60, 0x13, 0xc9, 0xb0, 0x95, 0xbb, 0x12, 0x11, 0x26, 0xf6, 0x53, 0x93, 0x18, 0xad,
+	0x83, 0xcd, 0x42, 0xfa, 0x19, 0x57, 0x30, 0x76, 0xa6, 0x16, 0x63, 0x1f, 0x6c, 0xc7, 0xd6, 0xb1,
+	0xd9, 0x41, 0x4c, 0x3a, 0xc7, 0x66, 0x87, 0x76, 0xa1, 0x56, 0x75, 0xbd, 0x3f, 0xb2, 0x98, 0xfa,
+	0x6a, 0xd8, 0xca, 0x37, 0xc6, 0x3b, 0x08, 0xd9, 0x66, 0xd6, 0xb1, 0x08, 0x3b, 0xbf, 0x53, 0xf1,
+	0x1a, 0x96, 0x7d, 0xa2, 0x5d, 0x89, 0x4b, 0x18, 0x9d, 0x71, 0x46, 0x55, 0x19, 0xbf, 0xc2, 0x5c,
+	0x12, 0x6b, 0xd5, 0x30, 0xa1, 0x80, 0x19, 0xbb, 0xa2, 0x20, 0x66, 0x1f, 0x98, 0xcb, 0x93, 0xc4,
+	0x5b, 0x98, 0x92, 0x31, 0xca, 0x78, 0xe2, 0x48, 0x76, 0x62, 0xfb, 0x1d, 0xc0, 0x4d, 0x7f, 0x7d,
+	0x4a, 0xe6, 0xa3, 0x2a, 0x08, 0x1f, 0x21, 0xfa, 0xb5, 0x73, 0xc2, 0x45, 0xd2, 0x8f, 0x3c, 0x44,
+	0xc9, 0xe9, 0xb9, 0xf8, 0x02, 0xb7, 0x80, 0x92, 0xd8, 0x1d, 0x69, 0xf0, 0x6d, 0xd7, 0xc9, 0x90,
+	0x79, 0xd8, 0x79, 0x86, 0x55, 0x6a, 0x95, 0xfe, 0x47, 0xe3, 0x09, 0x2e, 0xdf, 0x1b, 0x3e, 0x03,
+	0xfd, 0x19, 0xce, 0x43, 0x7f, 0xcb, 0x97, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x8f, 0xf8, 0xc2,
+	0x00, 0xd8, 0x01, 0x00, 0x00,
 }

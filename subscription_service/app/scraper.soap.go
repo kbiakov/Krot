@@ -1,4 +1,4 @@
-package krot
+package main
 
 type SoapScraper struct {
 	Scraper
