@@ -8,9 +8,8 @@ WORKDIR /app
 COPY app /app
 COPY lib /lib
 COPY cmd.sh /
-COPY cert.pem /
 
-EXPOSE 9010
+EXPOSE 9020
 
 USER krot
 

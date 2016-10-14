@@ -1,6 +1,11 @@
 version: '2'
 
 services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
   nsqlookupd:
     image: nsqio/nsq
     command: /nsqlookupd
@@ -28,7 +33,7 @@ services:
   notification_service:
     image: kbiakov/krot-notification
     ports:
-      - "9090:9090"
+      - "9010:9010"
     environment:
       ENV: DEV
       SUPERUSER_EMAIL: myadmin@gmail.com
@@ -42,7 +47,18 @@ services:
       - nsqd
       - nsqadmin
 
-  api:
+  subscription_service:
+    image: kbiakov/krot-subscription
+    ports:
+      - "9020:9020"
+    environment:
+      ENV: DEV
+    volumes:
+      - ./app:/app
+    depends_on:
+      - mongo
+
+  api_service:
     image: kbiakov/krot-api
     ports:
       - "5000:5000"
