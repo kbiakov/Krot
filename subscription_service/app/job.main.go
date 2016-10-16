@@ -44,8 +44,8 @@ func awaitResults(results <-chan string, callback func(string, error)) {
 	for {
 		select { // non-blocking
 
-		case result := <-results:
-			callback(result, nil)
+		case res := <-results:
+			callback(res, nil)
 		case <-timeout:
 			callback(nil, ErrJobTimeout)
 			return

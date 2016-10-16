@@ -58,11 +58,11 @@ func (s Subscription) Execute() {
 		close(results)
 	}(results)
 
-	awaitResults(results, func(result string, err error) {
+	awaitResults(results, func(res string, err error) {
 		if err != nil {
 			Log(s.ID, LogLevel_Error, err.Error())
 		} else {
-			NotifyUser(s.UserId, s.ID, result)
+			NotifyUser(s.UserId, s.ID, res)
 		}
 	})
 }
