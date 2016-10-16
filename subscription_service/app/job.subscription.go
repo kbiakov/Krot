@@ -7,14 +7,8 @@ import (
 
 // - Job processing
 
-func (s *Subscription) Observe() {
+func (s *Subscription) Schedule() {
 	jobrunner.In(s.PollingInterval, &s)
-}
-
-func (s Subscription) Dismiss() {
-	if err := data.RemoveId(s.ID); err != nil {
-		Log(s.ID, LogLevel_Error, err.Error())
-	}
 }
 
 func (s *Subscription) Run() {
@@ -22,34 +16,40 @@ func (s *Subscription) Run() {
 
 	if err := data.FindId(s.ID).One(&s); err != nil {
 		Log(s.ID, LogLevel_Error, err.Error())
-	} else {
-		if status != s.Status {
-			msg := fmt.Sprintf("expected %s, found %s", status, s.Status)
-			Log(s.ID, LogLevel_Warning, "Inconsistent status: " + msg)
+		return
+	}
+
+	if s.Status != status {
+		msg := fmt.Sprintf("expected %s, found %s", status, s.Status)
+		Log(s.ID, LogLevel_Warning, "Inconsistent status: " + msg)
+	}
+
+	switch s.Status {
+
+	case SubsStatus_Create:
+		if err := s.StartSubscription(); err != nil {
+			Log(s.ID, LogLevel_Error, "Observer created, but not runned: " + err.Error())
+		} else {
+			Log(s.ID, LogLevel_Info, "Observer created, running...")
 		}
 
-		switch s.Status {
+	case SubsStatus_Running:
+		s.Execute()
+		s.Schedule()
 
-		case SubsStatus_Created:
-			Log(s.ID, LogLevel_Info, "Observer created, running...")
-			s.StartSubscription()
-			s.Observe()
+	case SubsStatus_Stopped:
+		Log(s.ID, LogLevel_Info, "Observer stopped")
 
-		case SubsStatus_Running:
-			s.Lookup()
-			s.Observe()
-
-		case SubsStatus_Stopped:
-			Log(s.ID, LogLevel_Info, "Observer stopped")
-
-		case SubsStatus_NotExist:
+	case SubsStatus_Remove:
+		if err := s.RemoveSubscription(); err != nil {
+			Log(s.ID, LogLevel_Error, err.Error())
+		} else {
 			Log(s.ID, LogLevel_Info, "Observer removed")
-			s.Dismiss()
 		}
 	}
 }
 
-func (s Subscription) Lookup() {
+func (s Subscription) Execute() {
 	results := make(chan string)
 
 	go func(results chan string) {

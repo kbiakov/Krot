@@ -29,15 +29,15 @@ func NotifyUser(userID string, subsID string, text string) {
 		switch rec.Type {
 
 		case ReceiverType_Email:
-			PushMessageToQueue("email", CreateNotification(subsID, to))
+			PushToQueue("email", CreateNotification(subsID, to))
 		case ReceiverType_APNS:
-			PushMessageToQueue("apns", CreateNotification(subsID, to))
+			PushToQueue("apns", CreateNotification(subsID, to))
 		case ReceiverType_GCM:
 			gcmRegIDs = append(gcmRegIDs, to)
 		}
 	}
 
 	if len(gcmRegIDs) > 0 {
-		PushMessageToQueue("gcm", &Notification{subsID, &gcmRegIDs, text})
+		PushToQueue("gcm", &Notification{subsID, &gcmRegIDs, text})
 	}
 }

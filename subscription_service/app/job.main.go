@@ -1,10 +1,13 @@
 package main
 
-import "time"
+import (
+	"time"
+	"errors"
+)
 
 const (
-	ErrInvalidEmitterConversion = error("Invalid emitter conversion")
-	ErrObserverTimeout = error("Observer exited by timeout")
+	ErrInvalidEmitterCast = errors.New("Invalid emitter cast")
+	ErrJobTimeout = errors.New("Job exited by timeout")
 )
 
 type Job struct {
@@ -31,7 +34,7 @@ func getResult(e interface{}) (string, error) {
 	case Scraper:
 		return obj.scrap()
 	default:
-		return nil, ErrInvalidEmitterConversion
+		return nil, ErrInvalidEmitterCast
 	}
 }
 
@@ -44,7 +47,7 @@ func awaitResults(results <-chan string, callback func(string, error)) {
 		case result := <-results:
 			callback(result, nil)
 		case <-timeout:
-			callback(nil, ErrObserverTimeout)
+			callback(nil, ErrJobTimeout)
 			return
 		default:
 			return
