@@ -1,19 +1,17 @@
 package push_service
 
 import (
-	"github.com/alexjlockwood/gcm"
 	"errors"
+	"github.com/alexjlockwood/gcm"
 	"os"
 )
-
-const ErrGcmNotDelivered = errors.New("None of the messages were not delivered")
 
 const RetriesCount = 2
 
 func SendGcmMessage(subsID string, regIDs []string, text string) error {
-	data := map[string]interface{} {
+	data := map[string]interface{}{
 		"subscription_id": subsID,
-		"text": text,
+		"text":            text,
 	}
 
 	msg := gcm.NewMessage(data, regIDs...)
@@ -23,7 +21,7 @@ func SendGcmMessage(subsID string, regIDs []string, text string) error {
 	if response, err := sender.Send(msg, RetriesCount); err != nil {
 		return err
 	} else if response.Failure == len(regIDs) {
-		return ErrGcmNotDelivered
+		return errors.New("None of the messages were not delivered")
 	}
 	return nil
 }

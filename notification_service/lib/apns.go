@@ -4,8 +4,8 @@ import (
 	apns "github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 	"github.com/sideshow/apns2/payload"
-	"sync"
 	"os"
+	"sync"
 )
 
 const iosBadgePushCount = 1
@@ -17,14 +17,14 @@ func SendApnsMessage(subsID string, deviceToken string, text string) error {
 	}
 
 	newPayload := payload.NewPayload().
-		Alert("Krot #" + subsID).
+		Alert("Krot #"+subsID).
 		Badge(iosBadgePushCount).
 		Custom("message", text)
 
 	notification := &apns.Notification{
 		DeviceToken: deviceToken,
-		Topic: os.Getenv("BUNDLE_ID"),
-		Payload: newPayload,
+		Topic:       os.Getenv("BUNDLE_ID"),
+		Payload:     newPayload,
 	}
 
 	_, err := apnsClient.client.Push(notification)
@@ -36,14 +36,16 @@ func SendApnsMessage(subsID string, deviceToken string, text string) error {
 
 type ApnsClient struct {
 	client *apns.Client
-	err error
+	err    error
 }
 
 var apnsClientInstance *ApnsClient
 
+var once *sync.Once
+
 func getApnsClientInstance() *ApnsClient {
-	sync.Once.Do(func() {
-		apnsClientInstance = &newApnsClient()
+	once.Do(func() {
+		apnsClientInstance = newApnsClient()
 	})
 
 	return apnsClientInstance
@@ -58,6 +60,6 @@ func newApnsClient() *ApnsClient {
 
 	return &ApnsClient{
 		client: apns.NewClient(cert).Production(),
-		err: nil,
+		err:    nil,
 	}
 }

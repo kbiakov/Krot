@@ -2,8 +2,6 @@ package push_service
 
 import (
 	"net/smtp"
-	"sync"
-	"fmt"
 	"os"
 )
 
@@ -28,26 +26,19 @@ func SendEmail(subsID string, to string, text string) error {
 	return err
 }
 
-func CreateSmtpErrorMessage(recID string, to string, error error) *string {
-	return &fmt.Sprintf("Error sending email to %s," +
-		"receiver id = %s," +
-		"message: %s",
-		recID, to, error.Error())
-}
-
 // - Singleton instance
 
 type EmailAuth struct {
-	Auth *smtp.Auth
-	From string
+	Auth     smtp.Auth
+	From     string
 	Password string
 }
 
 var emailAuthInstance *EmailAuth
 
 func getEmailAuthInstance() *EmailAuth {
-	sync.Once.Do(func() {
-		emailAuthInstance = &newEmailAuthService()
+	once.Do(func() {
+		emailAuthInstance = newEmailAuthService()
 	})
 
 	return emailAuthInstance
@@ -59,8 +50,8 @@ func newEmailAuthService() *EmailAuth {
 	auth := smtp.PlainAuth("", from, password, "smtp.gmail.com")
 
 	return &EmailAuth{
-		From: from,
+		From:     from,
 		Password: password,
-		Auth: auth,
+		Auth:     auth,
 	}
 }

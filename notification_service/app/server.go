@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/nsqio/go-nsq"
 	"encoding/json"
 	"fmt"
+	"github.com/nsqio/go-nsq"
 
 	service "../lib"
 )
@@ -11,31 +11,31 @@ import (
 const DefaultChannel = "ch"
 
 type Notification struct {
-	SubscriptionID	string	 `json:"subscription_id"`
-	Endpoints	[]string `json:"endpoints"`
-	Text		string	 `json:"text"`
+	SubscriptionID string   `json:"subscription_id"`
+	Endpoints      []string `json:"endpoints"`
+	Text           string   `json:"text"`
 }
 
 func main() {
 	config := nsq.NewConfig()
 
-	bindHandler("email", &config, func(n *Notification) error {
+	bindHandler("email", config, func(n *Notification) error {
 		return service.SendEmail(n.SubscriptionID, n.Endpoints[0], n.Text)
 	})
 
-	bindHandler("apns", &config, func(n *Notification) error {
+	bindHandler("apns", config, func(n *Notification) error {
 		return service.SendApnsMessage(n.SubscriptionID, n.Endpoints[0], n.Text)
 	})
 
-	bindHandler("gcm", &config, func(n *Notification) error {
+	bindHandler("gcm", config, func(n *Notification) error {
 		return service.SendGcmMessage(n.SubscriptionID, n.Endpoints, n.Text)
 	})
 
 	fmt.Scanln()
 }
 
-func bindHandler(topic string, config *nsq.Config, handler func(*Notification) error)  {
-	q, _ := nsq.NewConsumer(topic, DefaultChannel, &config)
+func bindHandler(topic string, config *nsq.Config, handler func(*Notification) error) {
+	q, _ := nsq.NewConsumer(topic, DefaultChannel, config)
 
 	q.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		notification := Notification{}
