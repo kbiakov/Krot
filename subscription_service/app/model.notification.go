@@ -11,11 +11,11 @@ type Notification struct {
 	Text		string		`json:"text"`
 }
 
-func CreateNotification(subsID string, to string) *Notification {
-	return &Notification{subsID, []string{to}}
+func CreateNotification(subsID string, to string, text string) *Notification {
+	return &Notification{subsID, &[]string{to}, text}
 }
 
-func PushToQueue(topic string, n *Notification)  {
+func PushToQueue(topic string, n *Notification) {
 	jsonStr, err := json.Marshal(&n)
 	if err != nil {
 		msg := fmt.Sprintf("Error marshalling notification: %s", err.Error())

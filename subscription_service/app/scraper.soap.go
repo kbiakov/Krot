@@ -1,5 +1,7 @@
 package main
 
+import "errors"
+
 type SoapScraper struct {
 	Scraper
 
@@ -7,8 +9,7 @@ type SoapScraper struct {
 	Tag string
 }
 
-const ErrXmlKeyNotFound = error("XML tag not found")
-
+// TODO: add implementation
 func (s *SoapScraper) scrap() (string, error) {
-	return nil, ErrXmlKeyNotFound
+	return "", errors.New("XML tag not found")
 }

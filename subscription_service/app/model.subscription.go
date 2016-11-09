@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"time"
+	"errors"
+)
 
 const (
 	SubsType_HTML = iota
@@ -15,8 +18,6 @@ const (
 	SubsStatus_Remove
 )
 
-const ErrInvalidSubsStatus = error("Invalid subscription status")
-
 type Subscription struct {
 	ID	string	`json:"_id" bson:"_id,omitempty"`
 	UserId	string	`json:"user_id" bson:"user_id"`
@@ -29,13 +30,13 @@ type Subscription struct {
 
 // - Repository
 
-const data = mongo.C("subscriptions")
+var data = mongo.C("subscriptions")
 
 // - API
 
 func (s *Subscription) Subscribe() error {
 	if s.Status != SubsStatus_Create {
-		return ErrInvalidSubsStatus
+		return NewInvalidStatusError()
 	}
 
 	if err := data.Insert(&s); err != nil {
@@ -88,7 +89,7 @@ func (s Subscription) RemoveSubscription() error {
 
 func (s *Subscription) ChangeStatus(from uint8, to uint8) error {
 	if s.Status != from {
-		return ErrInvalidSubsStatus
+		return NewInvalidStatusError()
 	}
 
 	s.Status = to
@@ -96,6 +97,10 @@ func (s *Subscription) ChangeStatus(from uint8, to uint8) error {
 	return data.UpdateId(s.ID, &s)
 }
 
-func (s Subscription) PollingInterval() string {
-	return fmt.Sprintf("@every %d ms", s.PollMs)
+func (s Subscription) PollingInterval() time.Duration {
+	return time.Duration(s.PollMs) * time.Millisecond
+}
+
+func NewInvalidStatusError() error {
+	return errors.New("Invalid subscription status")
 }

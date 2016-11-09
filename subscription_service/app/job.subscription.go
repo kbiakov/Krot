@@ -7,11 +7,11 @@ import (
 
 // - Job processing
 
-func (s *Subscription) Schedule() {
-	jobrunner.In(s.PollingInterval, &s)
+func (s Subscription) Schedule() {
+	jobrunner.In(s.PollingInterval(), s)
 }
 
-func (s *Subscription) Run() {
+func (s Subscription) Run() {
 	status := s.Status
 
 	if err := data.FindId(s.ID).One(&s); err != nil {
@@ -53,7 +53,7 @@ func (s Subscription) Execute() {
 	results := make(chan string)
 
 	go func(results chan string) {
-		job := Job{s, results}
+		job := Job{&s, results}
 		job.Process()
 		close(results)
 	}(results)

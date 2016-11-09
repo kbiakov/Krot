@@ -1,56 +1,50 @@
 package main
 
 import (
-	"github.com/bamzi/jobrunner"
-	"gopkg.in/mgo.v2"
-)
-
-import (
-	"flag"
-	"fmt"
-	"net"
-
 	"golang.org/x/net/context"
-
 	"github.com/nsqio/go-nsq"
-
+	"github.com/bamzi/jobrunner"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/grpclog"
+	"gopkg.in/mgo.v2"
+
+	"net"
+	"fmt"
+	"log"
 
 	pb "../rpc"
 )
 
-var (
-	tls	 = flag.Bool("tls", false, "Connection uses TLS if true, else plain TCP")
-	certFile = flag.String("cert_file", "data/server1.pem", "The TLS cert file")
-	keyFile	 = flag.String("key_file", "data/server1.key", "The TLS key file")
-)
-
 type RpcServer struct {}
 
-func (s *RpcServer) Subscribe(ctx context.Context, subscription *pb.Subscription) (*pb.Response, error) {
-	err := Subscription(subscription).Subscribe()
+func (rpc *RpcServer) Subscribe(ctx context.Context, s *pb.Subscription) (*pb.Response, error) {
+	err := (&Subscription{
+		UserId: s.UserId,
+		Type: uint8(s.Type),
+		Url: s.Url,
+		Tag: s.Tag,
+		PollMs: s.PollMs,
+		Status: uint8(s.Status),
+	}).Subscribe()
 
 	return &pb.Response{
 		Success:err == nil,
-		Error:err,
+		Error:err.Error(),
 	}, nil
 }
 
-func (s *RpcServer) ResumeSubscription(ctx context.Context, sId *pb.SubscriptionId) (*pb.Response, error) {
+func (rpc *RpcServer) ResumeSubscription(ctx context.Context, sId *pb.SubscriptionId) (*pb.Response, error) {
 	return performForId(sId.Id, func(s *Subscription) error {
 		return s.ResumeSubscription()
 	})
 }
 
-func (c *RpcServer) StopSubscription(ctx context.Context, sId *pb.SubscriptionId) (*pb.Response, error) {
+func (rpc *RpcServer) StopSubscription(ctx context.Context, sId *pb.SubscriptionId) (*pb.Response, error) {
 	return performForId(sId.Id, func(s *Subscription) error {
 		return s.StopSubscription()
 	})
 }
 
-func (c *RpcServer) Unsubscribe(ctx context.Context, sId *pb.SubscriptionId) (*pb.Response, error) {
+func (rpc *RpcServer) Unsubscribe(ctx context.Context, sId *pb.SubscriptionId) (*pb.Response, error) {
 	return performForId(sId.Id, func(s *Subscription) error {
 		return s.Unsubscribe()
 	})
@@ -59,14 +53,17 @@ func (c *RpcServer) Unsubscribe(ctx context.Context, sId *pb.SubscriptionId) (*p
 func performForId(id string, handler func (*Subscription) error) (*pb.Response, error) {
 	s, err := GetSubscription(id)
 	if err != nil {
-		return &pb.Response{false, err}, nil
+		return &pb.Response{
+			Success: false,
+			Error: err.Error(),
+		}, nil
 	}
 
-	err = handler(&s)
+	err = handler(s)
 
 	return &pb.Response{
 		Success: err == nil,
-		Error: err,
+		Error: err.Error(),
 	}, nil
 }
 
@@ -100,23 +97,15 @@ func main() {
 	startRpcServer(9020)
 }
 
-func startRpcServer(port *int)  {
-	flag.Parse()
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+func startRpcServer(port int)  {
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		grpclog.Fatalf("Failed to listen: %v", err)
+		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	var opts []grpc.ServerOption
-	if *tls {
-		creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
-		if err != nil {
-			grpclog.Fatalf("Failed to generate credentials %v", err)
-		}
-		opts = []grpc.ServerOption{grpc.Creds(creds)}
+	s := grpc.NewServer()
+	pb.RegisterSubscriptionServiceServer(s, &RpcServer{})
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
 	}
-
-	grpcServer := grpc.NewServer(opts...)
-	pb.RegisterSubscriptionServiceServer(grpcServer, &RpcServer{})
-	grpcServer.Serve(listener)
 }

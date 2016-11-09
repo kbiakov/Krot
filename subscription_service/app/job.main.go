@@ -5,11 +5,6 @@ import (
 	"errors"
 )
 
-const (
-	ErrInvalidEmitterCast = errors.New("Invalid emitter cast")
-	ErrJobTimeout = errors.New("Job exited by timeout")
-)
-
 type Job struct {
 	Subscription *Subscription
 	results chan<- string
@@ -34,7 +29,7 @@ func getResult(e interface{}) (string, error) {
 	case Scraper:
 		return obj.scrap()
 	default:
-		return nil, ErrInvalidEmitterCast
+		return "", errors.New("Invalid emitter cast")
 	}
 }
 
@@ -47,7 +42,7 @@ func awaitResults(results <-chan string, callback func(string, error)) {
 		case res := <-results:
 			callback(res, nil)
 		case <-timeout:
-			callback(nil, ErrJobTimeout)
+			callback("", errors.New("Job exited by timeout"))
 			return
 		default:
 			return

@@ -1,12 +1,12 @@
 package main
 
-const ErrInvalidScraperType = error("Invalid scraper type")
+import "errors"
 
 type Scraper interface {
 	scrap() (string, error)
 }
 
-func CreateScraper(sType int8, url string, tag string) (*Scraper, error) {
+func CreateScraper(sType uint8, url string, tag string) (Scraper, error) {
 	switch sType {
 
 	case SubsType_HTML:
@@ -14,13 +14,11 @@ func CreateScraper(sType int8, url string, tag string) (*Scraper, error) {
 			Url: url,
 			ClassName: tag,
 		}, nil
-
 	case SubsType_JSON:
 		return &RestScraper{
 			Url: url,
 			Key: tag,
 		}, nil
-
 	case SubsType_XML:
 		return &SoapScraper{
 			Url: url,
@@ -28,5 +26,5 @@ func CreateScraper(sType int8, url string, tag string) (*Scraper, error) {
 		}, nil
 	}
 
-	return nil, ErrInvalidScraperType
+	return nil, errors.New("Invalid scraper type")
 }
