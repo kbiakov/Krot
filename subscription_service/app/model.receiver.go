@@ -7,15 +7,15 @@ const (
 )
 
 type Receiver struct {
-	Name	 string	`json:"name" bson:"name"`
-	Type	 uint8	`json:"type" bson:"type"`
-	Endpoint string	`json:"endpoint" bson:"endpoint"`
+	Name     string `json:"name" bson:"name"`
+	Type     uint8  `json:"type" bson:"type"`
+	Endpoint string `json:"endpoint" bson:"endpoint"`
 }
 
 func NotifyUser(userID string, subsID string, text string) {
 	user, err := GetUserByID(userID)
 	if err != nil {
-		Log(subsID, LogLevel_Error, "Error sending notification: " + err.Error())
+		Log(subsID, LogLevel_Error, "Error sending notification: "+err.Error())
 		return
 	}
 

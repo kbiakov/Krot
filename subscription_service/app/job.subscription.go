@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/bamzi/jobrunner"
 	"fmt"
+	"github.com/bamzi/jobrunner"
 )
 
 // - Job processing
@@ -21,14 +21,14 @@ func (s Subscription) Run() {
 
 	if s.Status != status {
 		msg := fmt.Sprintf("expected %s, found %s", status, s.Status)
-		Log(s.ID, LogLevel_Warning, "Inconsistent status: " + msg)
+		Log(s.ID, LogLevel_Warning, "Inconsistent status: "+msg)
 	}
 
 	switch s.Status {
 
 	case SubsStatus_Create:
 		if err := s.StartSubscription(); err != nil {
-			Log(s.ID, LogLevel_Error, "Observer created, but not runned: " + err.Error())
+			Log(s.ID, LogLevel_Error, "Observer created, but not runned: "+err.Error())
 		} else {
 			Log(s.ID, LogLevel_Info, "Observer created, running...")
 		}

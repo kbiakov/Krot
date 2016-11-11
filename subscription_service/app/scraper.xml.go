@@ -2,7 +2,7 @@ package main
 
 import "errors"
 
-type SoapScraper struct {
+type XmlScraper struct {
 	Scraper
 
 	Url string
@@ -10,6 +10,6 @@ type SoapScraper struct {
 }
 
 // TODO: add implementation
-func (s *SoapScraper) scrap() (string, error) {
+func (s *XmlScraper) scrap() (string, error) {
 	return "", errors.New("XML tag not found")
 }

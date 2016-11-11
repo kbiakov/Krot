@@ -1,8 +1,8 @@
 package main
 
 import (
-	"time"
 	"errors"
+	"time"
 )
 
 const (
@@ -19,13 +19,13 @@ const (
 )
 
 type Subscription struct {
-	ID	string	`json:"_id" bson:"_id,omitempty"`
-	UserId	string	`json:"user_id" bson:"user_id"`
-	Type	uint8	`json:"type" bson:"type"`
-	Url	string	`json:"url" bson:"url"`
-	Tag	string	`json:"tag" bson:"tag"`
-	PollMs	uint32	`json:"poll_ms" bson:"poll_ms"`
-	Status	uint8	`json:"status" bson:"status"`
+	ID     string `json:"_id" bson:"_id,omitempty"`
+	UserId string `json:"user_id" bson:"user_id"`
+	Type   uint8  `json:"type" bson:"type"`
+	Url    string `json:"url" bson:"url"`
+	Tag    string `json:"tag" bson:"tag"`
+	PollMs uint32 `json:"poll_ms" bson:"poll_ms"`
+	Status uint8  `json:"status" bson:"status"`
 }
 
 // - Repository

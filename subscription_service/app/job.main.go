@@ -1,13 +1,13 @@
 package main
 
 import (
-	"time"
 	"errors"
+	"time"
 )
 
 type Job struct {
 	Subscription *Subscription
-	results chan<- string
+	results      chan<- string
 }
 
 func (j *Job) Process() {

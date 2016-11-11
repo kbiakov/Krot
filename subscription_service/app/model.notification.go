@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 type Notification struct {
-	SubscriptionID	string		`json:"subscription_id"`
-	Endpoints	*[]string	`json:"endpoints"`
-	Text		string		`json:"text"`
+	SubscriptionID string    `json:"subscription_id"`
+	Endpoints      *[]string `json:"endpoints"`
+	Text           string    `json:"text"`
 }
 
 func CreateNotification(subsID string, to string, text string) *Notification {

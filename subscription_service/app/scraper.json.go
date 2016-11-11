@@ -1,31 +1,20 @@
 package main
 
 import (
-	"github.com/djimenez/iconv-go"
-	"net/http"
+	"bytes"
 	"encoding/json"
 	"errors"
-	"bytes"
 )
 
-type RestScraper struct {
+type JsonScraper struct {
 	Scraper
 
 	Url string
 	Key string
 }
 
-func (s *RestScraper) scrap() (string, error) {
-	// Get content by url
-	// TODO: proxy request?
-	res, err := http.Get(s.Url)
-	if err != nil {
-		return "", err
-	}
-	defer res.Body.Close()
-
-	// Decode content
-	utfBodyReader, err := iconv.NewReader(res.Body, "utf-8", "windows-1252")
+func (s *JsonScraper) scrap() (string, error) {
+	utfBodyReader, err := GetUtfContentByUrl(s.Url)
 	if err != nil {
 		return "", err
 	}

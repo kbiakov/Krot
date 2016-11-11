@@ -1,34 +1,34 @@
 package main
 
 import (
-	"golang.org/x/net/context"
-	"github.com/nsqio/go-nsq"
 	"github.com/bamzi/jobrunner"
+	"github.com/nsqio/go-nsq"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"gopkg.in/mgo.v2"
 
-	"net"
 	"fmt"
 	"log"
+	"net"
 
 	pb "../rpc"
 )
 
-type RpcServer struct {}
+type RpcServer struct{}
 
 func (rpc *RpcServer) Subscribe(ctx context.Context, s *pb.Subscription) (*pb.Response, error) {
 	err := (&Subscription{
 		UserId: s.UserId,
-		Type: uint8(s.Type),
-		Url: s.Url,
-		Tag: s.Tag,
+		Type:   uint8(s.Type),
+		Url:    s.Url,
+		Tag:    s.Tag,
 		PollMs: s.PollMs,
 		Status: uint8(s.Status),
 	}).Subscribe()
 
 	return &pb.Response{
-		Success:err == nil,
-		Error:err.Error(),
+		Success: err == nil,
+		Error:   err.Error(),
 	}, nil
 }
 
@@ -50,12 +50,12 @@ func (rpc *RpcServer) Unsubscribe(ctx context.Context, sId *pb.SubscriptionId) (
 	})
 }
 
-func performForId(id string, handler func (*Subscription) error) (*pb.Response, error) {
+func performForId(id string, handler func(*Subscription) error) (*pb.Response, error) {
 	s, err := GetSubscription(id)
 	if err != nil {
 		return &pb.Response{
 			Success: false,
-			Error: err.Error(),
+			Error:   err.Error(),
 		}, nil
 	}
 
@@ -63,7 +63,7 @@ func performForId(id string, handler func (*Subscription) error) (*pb.Response, 
 
 	return &pb.Response{
 		Success: err == nil,
-		Error: err.Error(),
+		Error:   err.Error(),
 	}, nil
 }
 
@@ -97,7 +97,7 @@ func main() {
 	startRpcServer(9020)
 }
 
-func startRpcServer(port int)  {
+func startRpcServer(port int) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
