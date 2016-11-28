@@ -63,3 +63,10 @@ services:
     image: kbiakov/krot-api
     ports:
       - "5000:5000"
+    environment:
+      ENV: DEV
+    volumes:
+      - ./app:/app
+    depends_on:
+      - mongo
+      - subscription_service

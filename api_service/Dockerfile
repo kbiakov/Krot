@@ -9,7 +9,7 @@ COPY app /app
 COPY rpc /rpc
 COPY cmd.sh /
 
-EXPOSE 9020
+EXPOSE 5000
 
 USER krot
 

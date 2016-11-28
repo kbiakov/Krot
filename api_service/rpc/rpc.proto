@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+service SubscriptionService {
+    rpc Subscribe(Subscription) returns (Response) {}
+    rpc ResumeSubscription(SubscriptionId) returns (Response) {}
+    rpc StopSubscription(SubscriptionId) returns (Response) {}
+    rpc Unsubscribe(SubscriptionId) returns (Response) {}
+}
+
+message Subscription {
+    string user_id = 1;
+    uint32 type = 2;
+    string url = 3;
+    string tag = 4;
+    uint32 poll_ms = 5;
+    uint32 status = 6;
+}
+
+message SubscriptionId {
+    string id = 1;
+}
+
+message Response {
+    bool success = 1;
+    string error = 2;
+}
