@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"github.com/bamzi/jobrunner"
-)
+import "github.com/bamzi/jobrunner"
 
 // - Job processing
 
@@ -20,8 +17,7 @@ func (s Subscription) Run() {
 	}
 
 	if s.Status != status {
-		msg := fmt.Sprintf("expected %s, found %s", status, s.Status)
-		Log(s.ID, LogLevel_Warning, "Inconsistent status: "+msg)
+		Log(s.ID, LogLevel_Warning, "Inconsistent status: expected "+status+", found "+s.Status)
 	}
 
 	switch s.Status {

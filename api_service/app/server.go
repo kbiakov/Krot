@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	Routes_Api = "api/v1"
+	Routes_Api = "/api/v1"
 
 	Routes_Auth = Routes_Api + "/auth"
 	Routes_SignUp = Routes_Auth + "/signup"
-	Routes_SignIn = Routes_Auth + "/signin"
+	Routes_Login = Routes_Auth + "/login"
 	Routes_Logout = Routes_Auth + "/logout"
 
 	Routes_Users = Routes_Api + "/users/:uid"
@@ -37,7 +37,7 @@ func main() {
 	defer session.Close()
 
 	// Hold database context
-	mongo := session.DB("krot")
+	mongo = session.DB("krot")
 
 	// Create necessary indexes
 	createIndexes()
@@ -74,19 +74,19 @@ func createIndexes()  {
 
 func handleRoutes(e *echo.Echo) {
 	// Auth
-	e.POST(Routes_SignUp, validateUserBody, auth.signUp)
-	e.POST(Routes_SignIn, validateUserBody, signIn)
-	e.GET(Routes_Logout, checkAuthentication, logout)
+	e.POST(Routes_SignUp, SignUp)
+	e.POST(Routes_Login, Login)
+	e.GET(Routes_Logout, Logout)
 
 	// Users
-	e.GET(Routes_Logs, checkAuthentication, getLogs)
-	e.GET(Routes_Status, checkAuthentication, adminOnly, getJobsStatus)
-	e.DELETE(Routes_Users, validateUserBody, deleteUser)
+	e.GET(Routes_Logs, GetLogs)
+	e.GET(Routes_Status, GetJobsStatus)
+	e.DELETE(Routes_Users, DeleteUser)
 
 	// Receivers
-	e.GET(Routes_Receivers, checkAuthentication, getReceivers)
-	e.POST(Routes_ReceiverSpec, checkAuthentication, createReceiver)
-	e.DELETE(Routes_ReceiverSpec, checkAuthentication, removeReceiver)
+	e.GET(Routes_Receivers, GetReceivers)
+	e.POST(Routes_Receivers, CreateReceiver)
+	e.DELETE(Routes_ReceiverSpec, RemoveReceiver)
 
 	// Subscriptions
 	e.GET(Routes_Subscriptions, GetSubscriptions)

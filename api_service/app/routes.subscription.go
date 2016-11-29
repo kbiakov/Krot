@@ -4,13 +4,14 @@ import (
 	"github.com/labstack/echo"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"sync"
 	"log"
 
 	pb "../rpc"
 )
+
+const addr = "localhost:9020"
 
 var client *pb.SubscriptionServiceClient
 
@@ -24,7 +25,7 @@ func getRpcClientInstance() pb.SubscriptionServiceClient {
 
 func newRpcClient() *pb.SubscriptionServiceClient {
 	// set up a connection to the server
-	conn, err := grpc.Dial("localhost:9020", grpc.WithInsecure())
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -34,11 +35,8 @@ func newRpcClient() *pb.SubscriptionServiceClient {
 }
 
 func GetSubscriptions(ctx echo.Context) error {
-	var ss []pb.Subscription
-	uid := ctx.Param("uid")
-	query := bson.M{"user_id": uid}
-
-	if err := mongo.C("subscriptions").Find(query).All(&ss); err != nil {
+	ss, err := GetSubscriptionsByUserID(ctx.Param("uid"))
+	if err != nil {
 		return err
 	}
 
@@ -60,7 +58,7 @@ func CreateSubscription(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, res)
 }
 
-func performForId(ctx echo.Context, statusOk int, handler func(pb.SubscriptionServiceClient, *pb.SubscriptionId)) error {
+func performForId(ctx echo.Context, statusOk int, handler func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId)) error {
 	sID := new(pb.SubscriptionId)
 	if err := ctx.Bind(sID); err != nil {
 		return err
