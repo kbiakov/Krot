@@ -1,0 +1,72 @@
+version: '2'
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+    links:
+      - nsqlookupd:nsqlookupd
+
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    ports:
+      - "4171:4171"
+    links:
+      - nsqlookupd:nsqlookupd
+
+  notification_service:
+    image: kbiakov/krot-notification
+    ports:
+      - "9010:9010"
+    environment:
+      ENV: DEV
+      SUPERUSER_EMAIL: myadmin@gmail.com
+      SUPERUSER_PASSWORD: admin
+      BUNDLE_ID: com.mypackage.myapp
+      CERT_PASSWORD: password
+    volumes:
+      - ./app:/app
+    depends_on:
+      - nsqlookupd
+      - nsqd
+      - nsqadmin
+
+  subscription_service:
+    image: kbiakov/krot-subscription
+    ports:
+      - "9020:9020"
+    environment:
+      ENV: DEV
+    volumes:
+      - ./app:/app
+    depends_on:
+      - mongo
+      - notification_service
+
+  api_service:
+    image: kbiakov/krot-api
+    ports:
+      - "5000:5000"
+    environment:
+      ENV: DEV
+    volumes:
+      - ./app:/app
+    depends_on:
+      - mongo
+      - subscription_service
