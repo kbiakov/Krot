@@ -12,7 +12,7 @@ type Subscription struct {
 	Status uint8  `json:"status" bson:"status"`
 }
 
-func GetSubscriptionsByUserID(userID string) (*[]Subscription, error) {
+func GetSubscriptionsForUserID(userID string) (*[]Subscription, error) {
 	var ss []Subscription
 	query := bson.M{"user_id": userID}
 

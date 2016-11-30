@@ -28,8 +28,8 @@ func (u *User) CreateUser() error {
 	return users.Insert(&u);
 }
 
-func (u User) IsValidPassword(hashedPassword string) bool {
-	return bcrypt.CompareHashAndPassword(hashedPassword, u.Password) == nil
+func (u User) IsValidPassword(password string) bool {
+	return bcrypt.CompareHashAndPassword(u.Password, password) == nil
 }
 
 func (u User) DeleteUser() error {

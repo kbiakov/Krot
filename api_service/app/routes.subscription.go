@@ -34,8 +34,23 @@ func newRpcClient() *pb.SubscriptionServiceClient {
 	return &pb.NewSubscriptionServiceClient(conn)
 }
 
+func performForId(ctx echo.Context, statusOk int, handler func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId)) error {
+	sID := new(pb.SubscriptionId)
+	if err := ctx.Bind(sID); err != nil {
+		return err
+	}
+
+	c := getRpcClientInstance()
+	res, err := handler(&c, sID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(statusOk, res)
+}
+
 func GetSubscriptions(ctx echo.Context) error {
-	ss, err := GetSubscriptionsByUserID(ctx.Param("uid"))
+	ss, err := GetSubscriptionsForUserID(ctx.Param("uid"))
 	if err != nil {
 		return err
 	}
@@ -56,21 +71,6 @@ func CreateSubscription(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusCreated, res)
-}
-
-func performForId(ctx echo.Context, statusOk int, handler func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId)) error {
-	sID := new(pb.SubscriptionId)
-	if err := ctx.Bind(sID); err != nil {
-		return err
-	}
-
-	c := getRpcClientInstance()
-	res, err := handler(&c, sID)
-	if err != nil {
-		return err
-	}
-
-	return ctx.JSON(statusOk, res)
 }
 
 func StopSubscription(ctx echo.Context) error {

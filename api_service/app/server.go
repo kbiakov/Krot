@@ -3,6 +3,7 @@ package main
 import (
 	"gopkg.in/mgo.v2"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 const (
@@ -26,6 +27,8 @@ const (
 	Routes_SubscriptionResume = Routes_SubscriptionSpec + "/resume"
 )
 
+const jwtSecret = "secret"
+
 var mongo *mgo.Database
 
 func main() {
@@ -44,6 +47,8 @@ func main() {
 
 	// Init API router
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 	handleRoutes(e)
 	e.Logger.Fatal(e.Start(":5000"))
 }
@@ -78,20 +83,23 @@ func handleRoutes(e *echo.Echo) {
 	e.POST(Routes_Login, Login)
 	e.GET(Routes_Logout, Logout)
 
+	r := e.Group(Routes_Users)
+	r.Use(middleware.JWT([]byte(jwtSecret)))
+
 	// Users
-	e.GET(Routes_Logs, GetLogs)
-	e.GET(Routes_Status, GetJobsStatus)
-	e.DELETE(Routes_Users, DeleteUser)
+	r.GET(Routes_Logs, GetLogs)
+	r.GET(Routes_Status, GetJobsStatus)
+	r.DELETE(Routes_Users, DeleteUser)
 
 	// Receivers
-	e.GET(Routes_Receivers, GetReceivers)
-	e.POST(Routes_Receivers, CreateReceiver)
-	e.DELETE(Routes_ReceiverSpec, RemoveReceiver)
+	r.GET(Routes_Receivers, GetReceivers)
+	r.POST(Routes_Receivers, CreateReceiver)
+	r.DELETE(Routes_ReceiverSpec, RemoveReceiver)
 
 	// Subscriptions
-	e.GET(Routes_Subscriptions, GetSubscriptions)
-	e.POST(Routes_Subscriptions, CreateSubscription)
-	e.GET(Routes_SubscriptionStop, StopSubscription)
-	e.GET(Routes_SubscriptionResume, ResumeSubscription)
-	e.DELETE(Routes_SubscriptionSpec, RemoveSubscription)
+	r.GET(Routes_Subscriptions, GetSubscriptions)
+	r.POST(Routes_Subscriptions, CreateSubscription)
+	r.GET(Routes_SubscriptionStop, StopSubscription)
+	r.GET(Routes_SubscriptionResume, ResumeSubscription)
+	r.DELETE(Routes_SubscriptionSpec, RemoveSubscription)
 }

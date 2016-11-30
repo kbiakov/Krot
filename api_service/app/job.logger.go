@@ -16,8 +16,8 @@ type Log struct {
 }
 
 // TODO: add paging, etc?
-func GetLogsForId(userID string) (*[]Log, error) {
-	ss, err := GetSubscriptionsByUserID(userID)
+func GetLogsForUserID(userID string) (*[]Log, error) {
+	ss, err := GetSubscriptionsForUserID(userID)
 	if err != nil {
 		return nil, err
 	}
