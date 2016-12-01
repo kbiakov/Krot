@@ -6,29 +6,6 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-const (
-	Routes_Api = "/api/v1"
-
-	Routes_Auth = Routes_Api + "/auth"
-	Routes_SignUp = Routes_Auth + "/signup"
-	Routes_Login = Routes_Auth + "/login"
-	Routes_Logout = Routes_Auth + "/logout"
-
-	Routes_Users = Routes_Api + "/users/:uid"
-	Routes_Logs = Routes_Users + "/logs"
-	Routes_Status = Routes_Users + "/status"
-
-	Routes_Receivers = Routes_Users + "/receivers"
-	Routes_ReceiverSpec = Routes_Receivers + "/:name"
-
-	Routes_Subscriptions = Routes_Users + "/subscriptions"
-	Routes_SubscriptionSpec = Routes_Subscriptions + "/:id"
-	Routes_SubscriptionStop = Routes_SubscriptionSpec + "/stop"
-	Routes_SubscriptionResume = Routes_SubscriptionSpec + "/resume"
-)
-
-const jwtSecret = "secret"
-
 var mongo *mgo.Database
 
 func main() {
@@ -78,28 +55,32 @@ func createIndexes()  {
 }
 
 func handleRoutes(e *echo.Echo) {
-	// Auth
-	e.POST(Routes_SignUp, SignUp)
-	e.POST(Routes_Login, Login)
-	e.GET(Routes_Logout, Logout)
+	api := e.Group("/api/v1")
 
-	r := e.Group(Routes_Users)
+	// Auth
+	a := e.Group("/auth")
+	a.POST("/signup", SignUp)
+	a.POST("/login", Login)
+	a.GET("/logout", Logout)
+
+	r := api.Group("/users/:uid")
 	r.Use(middleware.JWT([]byte(jwtSecret)))
+	r.Use(checkUserAuth)
 
 	// Users
-	r.GET(Routes_Logs, GetLogs)
-	r.GET(Routes_Status, GetJobsStatus)
-	r.DELETE(Routes_Users, DeleteUser)
+	r.GET("/logs", GetLogs)
+	r.GET("/status", GetJobsStatus)
+	r.DELETE("", DeleteUser)
 
 	// Receivers
-	r.GET(Routes_Receivers, GetReceivers)
-	r.POST(Routes_Receivers, CreateReceiver)
-	r.DELETE(Routes_ReceiverSpec, RemoveReceiver)
+	r.GET("/receivers", GetReceivers)
+	r.POST("/receivers", CreateReceiver)
+	r.DELETE("/receivers/:name", RemoveReceiver)
 
 	// Subscriptions
-	r.GET(Routes_Subscriptions, GetSubscriptions)
-	r.POST(Routes_Subscriptions, CreateSubscription)
-	r.GET(Routes_SubscriptionStop, StopSubscription)
-	r.GET(Routes_SubscriptionResume, ResumeSubscription)
-	r.DELETE(Routes_SubscriptionSpec, RemoveSubscription)
+	r.GET("/subscriptions", GetSubscriptions)
+	r.POST("/subscriptions", CreateSubscription)
+	r.GET("/subscriptions/:id/stop", StopSubscription)
+	r.GET("/subscriptions/:id/resume", ResumeSubscription)
+	r.DELETE("/subscriptions/:id", RemoveSubscription)
 }
