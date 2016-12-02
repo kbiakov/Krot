@@ -4,7 +4,7 @@ services:
   proxy:
       image: krot/proxy:1.0
       links:
-        - identidock
+        - api_service
       ports:
        - "80:80"
       environment:
