@@ -1,21 +1,10 @@
 package main
 
 import (
-	// jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"net/http"
 	"errors"
 )
-
-/*
-func generateUserToken(uid string) {
-	token, err := jwt.ParseFromRequest(
-		req,
-		func(token *jwt.Token) (interface{}, error) {
-			return authBackend.PublicKey, nil
-		})
-}
-*/
 
 func SignUp(ctx echo.Context) error {
 	u := new(User)
@@ -35,18 +24,37 @@ func SignUp(ctx echo.Context) error {
 		return err
 	}
 
-	// TODO: generate JWT token
-	// GetJwtMiddlewareInstance().mw.Get(ctx). ???
-	return ctx.JSON(http.StatusCreated, u)
+	res, err := newAuthResponse(u)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusCreated, res)
 }
 
 func Login(ctx echo.Context) error {
-	// TODO: check uid, email & password
-	// TODO: generate JWT token
-	return ctx.JSON(http.StatusOK, nil)
+	req := new(AuthRequest)
+	if err := ctx.Bind(req); err != nil {
+		return err
+	}
+
+	u, err := GetUser(req.Email)
+	if err != nil {
+		return err
+	}
+	if !u.IsValidPassword(req.Password) {
+		return echo.ErrUnauthorized
+	}
+
+	res, err := newAuthResponse(u)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, res)
 }
 
 func Logout(ctx echo.Context) error {
-	// TODO: remove receivers, change subscription statuses
+	// TODO: stop all subscriptions
 	return ctx.JSON(http.StatusNotImplemented, nil)
 }

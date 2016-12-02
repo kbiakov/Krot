@@ -7,7 +7,7 @@ import (
 )
 
 func GetLogs(ctx echo.Context) error {
-	ls, err := GetLogsForId(ctx.Param("uid"))
+	ls, err := GetLogsForUserID(ctx.Param("uid"))
 	if err != nil {
 		return err
 	}
