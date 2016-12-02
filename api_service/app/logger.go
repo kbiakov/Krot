@@ -22,9 +22,9 @@ func GetLogsForUserID(userID string) (*[]Log, error) {
 		return nil, err
 	}
 
-	logs := []Log{}
+	var logs []Log
 	for _, s := range *ss {
-		tmp := []Log{}
+		var tmp []Log
 		mongo.C("logs").
 			Find(bson.M{"subscription_id": s.ID}).
 			Sort([]string{"-time"}).
