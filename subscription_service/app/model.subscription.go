@@ -97,6 +97,21 @@ func (s *Subscription) ChangeStatus(from uint8, to uint8) error {
 	return data.UpdateId(s.ID, &s)
 }
 
+func StatusToString(status uint8) string {
+	switch status {
+	case SubsStatus_Create:
+		return "create"
+	case SubsStatus_Running:
+		return "running"
+	case SubsStatus_Stopped:
+		return "stopped"
+	case SubsStatus_Remove:
+		return "remove"
+	default:
+		return "undefined"
+	}
+}
+
 func (s Subscription) PollingInterval() time.Duration {
 	return time.Duration(s.PollMs) * time.Millisecond
 }

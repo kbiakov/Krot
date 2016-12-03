@@ -1,9 +1,9 @@
 package main
 
 import (
+	"errors"
 	"github.com/labstack/echo"
 	"net/http"
-	"errors"
 )
 
 func SignUp(ctx echo.Context) error {

@@ -17,7 +17,9 @@ func (s Subscription) Run() {
 	}
 
 	if s.Status != status {
-		Log(s.ID, LogLevel_Warning, "Inconsistent status: expected "+status+", found "+s.Status)
+		Log(s.ID, LogLevel_Warning, "Inconsistent status: "+
+			"expected "+StatusToString(status)+", "+
+			"found "+StatusToString(s.Status))
 	}
 
 	switch s.Status {

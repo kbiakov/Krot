@@ -10,14 +10,14 @@ import (
 const jwtSecret = "secret"
 
 type AuthRequest struct {
-	Email	 string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type AuthResponse struct {
 	AccessToken string `json:"access_token"`
 	ExpiresAt   int64  `json:"expires_at"`
-	User	    User   `json:"user"`
+	User        User   `json:"user"`
 }
 
 func CheckUserAuth(h echo.HandlerFunc) echo.HandlerFunc {
@@ -56,7 +56,7 @@ func NewAuthResponse(user *User) (*AuthResponse, error) {
 	// Form response
 	return &AuthResponse{
 		AccessToken: accessToken,
-		ExpiresAt: expiresAt,
-		User: *user,
+		ExpiresAt:   expiresAt,
+		User:        *user,
 	}, nil
 }

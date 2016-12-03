@@ -43,5 +43,5 @@ func removeReceiver(userID string, name string) error {
 		}
 	}
 
-	return errors.New("Receiver "+name+" for user "+u.Fullname+" not found")
+	return errors.New("Receiver " + name + " for user " + u.Fullname + " not found")
 }

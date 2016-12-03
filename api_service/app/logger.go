@@ -9,10 +9,10 @@ const (
 )
 
 type Log struct {
-	ID	string `json:"subscription_id" bson:"subscription_id"`
-	Level	rune   `json:"level" bson:"level"`
-	Time	string `json:"time" bson:"time"`
-	Message	string `json:"message" bson:"message"`
+	ID      string `json:"subscription_id" bson:"subscription_id"`
+	Level   rune   `json:"level" bson:"level"`
+	Time    string `json:"time" bson:"time"`
+	Message string `json:"message" bson:"message"`
 }
 
 // TODO: add paging, etc?

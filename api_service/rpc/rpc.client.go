@@ -3,9 +3,9 @@ package rpc
 import (
 	"github.com/labstack/echo"
 	"google.golang.org/grpc"
-	"sync"
 	"log"
 	"net/http"
+	"sync"
 )
 
 const addr = "localhost:9020"

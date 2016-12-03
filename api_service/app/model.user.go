@@ -1,13 +1,13 @@
 package main
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type User struct {
-	ID	  string     `json:"_id" bson:"_id,omitempty"`
-	Email	  string     `json:"email" bson:"email"`
+	ID        string     `json:"_id" bson:"_id,omitempty"`
+	Email     string     `json:"email" bson:"email"`
 	Password  string     `json:"password" bson:"password"`
 	Fullname  string     `json:"fullname" bson:"fullname"`
 	Receivers []Receiver `json:"receivers" bson:"receivers,inline"`
@@ -25,7 +25,7 @@ func (u *User) CreateUser() error {
 
 	u.Password = string(hashedPassword)
 
-	return users.Insert(&u);
+	return users.Insert(&u)
 }
 
 func (u User) IsValidPassword(password string) bool {

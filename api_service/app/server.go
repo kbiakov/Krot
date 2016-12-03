@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gopkg.in/mgo.v2"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"gopkg.in/mgo.v2"
 )
 
 var mongo *mgo.Database
@@ -30,12 +30,12 @@ func main() {
 	e.Logger.Fatal(e.Start(":5000"))
 }
 
-func createIndexes()  {
+func createIndexes() {
 	if err := mongo.C("users").EnsureIndex(mgo.Index{
-		Key: []string{"email"},
-		Unique: true,
+		Key:      []string{"email"},
+		Unique:   true,
 		DropDups: true,
-		Sparse: true,
+		Sparse:   true,
 	}); err != nil {
 		panic(err)
 	}
@@ -47,7 +47,7 @@ func createIndexes()  {
 	}
 
 	if err := mongo.C("logs").EnsureIndex(mgo.Index{
-		Key: []string{"subscription_id"},
+		Key:        []string{"subscription_id"},
 		Background: true,
 	}); err != nil {
 		panic(err)
@@ -83,7 +83,7 @@ func handleRoutes(e *echo.Echo) {
 	r.GET(Subscriptions, GetSubscriptions)
 	r.POST(Subscriptions, CreateSubscription)
 
-	const SubscriptionId = Subscriptions+"/:id"
+	const SubscriptionId = Subscriptions + "/:id"
 	r.GET(SubscriptionId+"/stop", StopSubscription)
 	r.GET(SubscriptionId+"/resume", ResumeSubscription)
 	r.DELETE(SubscriptionId, RemoveSubscription)
