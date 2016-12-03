@@ -13,7 +13,7 @@ type Subscription struct {
 }
 
 func GetSubscriptionsForUserID(userID string) (*[]Subscription, error) {
-	var ss []Subscription
+	var ss *[]Subscription
 	query := bson.M{"user_id": userID}
 
 	if err := mongo.C("subscriptions").Find(query).All(&ss); err != nil {

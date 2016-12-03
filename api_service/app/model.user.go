@@ -18,18 +18,18 @@ type User struct {
 var users = mongo.C("users")
 
 func (u *User) CreateUser() error {
-	hashedPassword, err := bcrypt.GenerateFromPassword(u.Password, bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
-	u.Password = hashedPassword
+	u.Password = string(hashedPassword)
 
 	return users.Insert(&u);
 }
 
 func (u User) IsValidPassword(password string) bool {
-	return bcrypt.CompareHashAndPassword(u.Password, password) == nil
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil
 }
 
 func (u User) DeleteUser() error {

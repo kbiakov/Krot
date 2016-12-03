@@ -16,12 +16,12 @@ type AuthRequest struct {
 
 type AuthResponse struct {
 	AccessToken string `json:"access_token"`
-	ExpiresAt   string `json:"expires_at"`
+	ExpiresAt   int64  `json:"expires_at"`
 	User	    User   `json:"user"`
 }
 
-func checkUserAuth(h echo.HandlerFunc) echo.HandlerFunc {
-	isAuthenticated := func (ctx echo.Context) bool {
+func CheckUserAuth(h echo.HandlerFunc) echo.HandlerFunc {
+	isAuthenticated := func(ctx echo.Context) bool {
 		u := ctx.Get("user").(*jwt.Token)
 		claims := u.Claims.(jwt.MapClaims)
 		authID := claims["name"].(string)
@@ -36,7 +36,7 @@ func checkUserAuth(h echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func newAuthResponse(user User) (*AuthResponse, error) {
+func NewAuthResponse(user *User) (*AuthResponse, error) {
 	// Create token
 	t := jwt.New(jwt.SigningMethodHS256)
 	expiresAt := time.Now().Add(time.Hour * 72).Unix()
@@ -57,6 +57,6 @@ func newAuthResponse(user User) (*AuthResponse, error) {
 	return &AuthResponse{
 		AccessToken: accessToken,
 		ExpiresAt: expiresAt,
-		User: user,
+		User: *user,
 	}, nil
 }

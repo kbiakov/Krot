@@ -24,7 +24,7 @@ func SignUp(ctx echo.Context) error {
 		return err
 	}
 
-	res, err := newAuthResponse(u)
+	res, err := NewAuthResponse(u)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func Login(ctx echo.Context) error {
 		return echo.ErrUnauthorized
 	}
 
-	res, err := newAuthResponse(u)
+	res, err := NewAuthResponse(u)
 	if err != nil {
 		return err
 	}

@@ -65,7 +65,7 @@ func handleRoutes(e *echo.Echo) {
 
 	r := api.Group("/users/:uid")
 	r.Use(middleware.JWT([]byte(jwtSecret)))
-	r.Use(checkUserAuth)
+	r.Use(CheckUserAuth)
 
 	// Users
 	r.GET("/logs", GetLogs)
@@ -73,14 +73,18 @@ func handleRoutes(e *echo.Echo) {
 	r.DELETE("", DeleteUser)
 
 	// Receivers
-	r.GET("/receivers", GetReceivers)
-	r.POST("/receivers", CreateReceiver)
-	r.DELETE("/receivers/:name", RemoveReceiver)
+	const Receivers = "/receivers"
+	r.GET(Receivers, GetReceivers)
+	r.POST(Receivers, CreateReceiver)
+	r.DELETE(Receivers+"/:name", RemoveReceiver)
 
 	// Subscriptions
-	r.GET("/subscriptions", GetSubscriptions)
-	r.POST("/subscriptions", CreateSubscription)
-	r.GET("/subscriptions/:id/stop", StopSubscription)
-	r.GET("/subscriptions/:id/resume", ResumeSubscription)
-	r.DELETE("/subscriptions/:id", RemoveSubscription)
+	const Subscriptions = "/subscriptions"
+	r.GET(Subscriptions, GetSubscriptions)
+	r.POST(Subscriptions, CreateSubscription)
+
+	const SubscriptionId = Subscriptions+"/:id"
+	r.GET(SubscriptionId+"/stop", StopSubscription)
+	r.GET(SubscriptionId+"/resume", ResumeSubscription)
+	r.DELETE(SubscriptionId, RemoveSubscription)
 }

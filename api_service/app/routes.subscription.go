@@ -33,19 +33,19 @@ func CreateSubscription(ctx echo.Context) error {
 }
 
 func StopSubscription(ctx echo.Context) error {
-	return pb.PerformForId(&ctx, func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId) {
+	return pb.PerformForId(ctx, func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId) (*pb.Response, error) {
 		return c.StopSubscription(context.Background(), sID)
 	})
 }
 
 func ResumeSubscription(ctx echo.Context) error {
-	return pb.PerformForId(&ctx, func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId) {
+	return pb.PerformForId(ctx, func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId) (*pb.Response, error) {
 		return c.ResumeSubscription(context.Background(), sID)
 	})
 }
 
 func RemoveSubscription(ctx echo.Context) error {
-	return pb.PerformForId(&ctx, func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId) {
+	return pb.PerformForId(ctx, func(c pb.SubscriptionServiceClient, sID *pb.SubscriptionId) (*pb.Response, error) {
 		return c.Unsubscribe(context.Background(), sID)
 	})
 }

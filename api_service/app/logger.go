@@ -16,7 +16,7 @@ type Log struct {
 }
 
 // TODO: add paging, etc?
-func GetLogsForUserID(userID string) (*[]Log, error) {
+func GetLogsForUserID(userID string) ([]Log, error) {
 	ss, err := GetSubscriptionsForUserID(userID)
 	if err != nil {
 		return nil, err
@@ -27,10 +27,10 @@ func GetLogsForUserID(userID string) (*[]Log, error) {
 		var tmp []Log
 		mongo.C("logs").
 			Find(bson.M{"subscription_id": s.ID}).
-			Sort([]string{"-time"}).
+			Sort("-time").
 			All(&tmp)
-		logs = append(logs, tmp)
+		logs = append(logs, tmp...)
 	}
 
-	return logs, err
+	return logs, nil
 }
