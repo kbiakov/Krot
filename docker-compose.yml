@@ -2,7 +2,7 @@ version: '2'
 
 services:
   proxy:
-      image: krot/proxy:1.0
+      image: krot/proxy
       links:
         - api_service
       ports:
@@ -41,7 +41,7 @@ services:
       - nsqlookupd:nsqlookupd
 
   notification_service:
-    image: kbiakov/krot-notification:1.0
+    image: kbiakov/krot-notification
     ports:
       - "9010:9010"
     environment:
@@ -58,7 +58,7 @@ services:
       - nsqadmin
 
   subscription_service:
-    image: kbiakov/krot-subscription:1.0
+    image: kbiakov/krot-subscription
     ports:
       - "9020:9020"
     environment:
@@ -70,7 +70,7 @@ services:
       - notification_service
 
   api_service:
-    image: kbiakov/krot-api:1.0
+    image: kbiakov/krot-api
     ports:
       - "5000:5000"
     environment:
