@@ -9,7 +9,7 @@ services:
        - "80:80"
       environment:
         - NGINX_HOST=127.0.0.1
-        - NGINX_PROXY=http://localhost:5000
+        - NGINX_PROXY=http://api_service:5000
 
   mongo:
     image: mongo
