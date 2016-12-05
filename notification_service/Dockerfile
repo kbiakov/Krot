@@ -2,16 +2,12 @@ FROM golang
 
 MAINTAINER Kirill Biakov <kbiakov@gmail.com>
 
-RUN groupadd -r krot && useradd -r -g krot krot
-
 WORKDIR /app
 COPY app /app
 COPY lib /lib
-COPY cert.pem /
 ADD cmd.sh /
+ADD cert.pem /
 
 EXPOSE 9010
 
-USER krot
-
-RUN sudo -u krot /cmd.sh
+CMD ["/cmd.sh"]
