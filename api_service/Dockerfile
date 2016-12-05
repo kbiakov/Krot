@@ -9,4 +9,4 @@ ADD cmd.sh /
 
 EXPOSE 5000
 
-CMD ["/cmd.sh"]
+RUN chmod 755 /cmd.sh

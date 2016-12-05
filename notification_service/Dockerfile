@@ -10,4 +10,4 @@ ADD cert.pem /
 
 EXPOSE 9010
 
-CMD ["/cmd.sh"]
+RUN chmod 755 /cmd.sh
