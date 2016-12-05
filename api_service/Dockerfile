@@ -13,4 +13,4 @@ EXPOSE 5000
 
 USER krot
 
-RUN chmod a+x /cmd.sh
+RUN sudo -u krot /cmd.sh
