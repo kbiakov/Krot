@@ -7,8 +7,8 @@ RUN groupadd -r krot && useradd -r -g krot krot
 WORKDIR /app
 COPY app /app
 COPY lib /lib
-COPY cmd.sh /
 COPY cert.pem /
+ADD cmd.sh /
 
 EXPOSE 9010
 

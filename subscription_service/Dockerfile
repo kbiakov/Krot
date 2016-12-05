@@ -7,7 +7,7 @@ RUN groupadd -r krot && useradd -r -g krot krot
 WORKDIR /app
 COPY app /app
 COPY rpc /rpc
-COPY cmd.sh /
+ADD cmd.sh /
 
 EXPOSE 9020
 
