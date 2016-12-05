@@ -5,4 +5,4 @@ COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["nginx", "-g", "daemon off;"]
+RUN chmod 755 "nginx -g daemon off;"
