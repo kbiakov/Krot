@@ -13,4 +13,4 @@ EXPOSE 9020
 
 USER krot
 
-CMD ["/cmd.sh"]
+RUN chmod +x /cmd.sh
