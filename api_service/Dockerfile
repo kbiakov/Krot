@@ -13,4 +13,4 @@ EXPOSE 5000
 
 USER krot
 
-RUN chmod +x /cmd.sh
+CMD ["$chmod +x /cmd.sh"]
