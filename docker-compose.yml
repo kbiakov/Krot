@@ -2,14 +2,15 @@ version: '2'
 
 services:
   proxy:
-      image: kbiakov/proxy:1.0
-      links:
-        - api_service
-      ports:
-       - "80:80"
-      environment:
-        - NGINX_HOST=127.0.0.1
-        - NGINX_PROXY=http://api_service:5000
+    image: kbiakov/proxy:1.0
+    links:
+      - api_service
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=127.0.0.1
+      - NGINX_PROXY=http://api_service:5000
+    tty: true
 
   mongo:
     image: mongo
@@ -56,6 +57,7 @@ services:
       - nsqlookupd
       - nsqd
       - nsqadmin
+    tty: true
 
   subscription_service:
     image: kbiakov/krot-subscription:1.0
@@ -68,6 +70,7 @@ services:
     depends_on:
       - mongo
       - notification_service
+    tty: true
 
   api_service:
     image: kbiakov/krot-api:1.0
@@ -80,3 +83,4 @@ services:
     depends_on:
       - mongo
       - subscription_service
+    tty: true
