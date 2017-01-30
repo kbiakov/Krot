@@ -3,14 +3,13 @@ version: '2'
 services:
   proxy:
     image: kbiakov/proxy:1.0
-    links:
-      - api_service
     ports:
       - "80:80"
+    links:
+      - api_service
     environment:
-      - NGINX_HOST=127.0.0.1
-      - NGINX_PROXY=http://api_service:5000
-    tty: true
+      NGINX_PROXY: "http://api_service:5000"
+      NGINX_HOST: "0.0.0.0"
 
   mongo:
     image: mongo
